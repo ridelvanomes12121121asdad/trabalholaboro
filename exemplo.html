@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Transação SPT - Nubank</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      font-family: 'Rajdhani', 'Segoe UI', sans-serif; /* Adicionado Rajdhani como fonte principal */
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .app {
+      background: rgba(15, 23, 42, 0.8); /* Cor do fundo da apresentação */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(147, 51, 234, 0.4); /* Cor roxa da apresentação */
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif; /* Fonte dos títulos da apresentação */
+      color: #a855f7; /* Roxo claro da apresentação */
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+
+    input, select {
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      background-color: rgba(15, 23, 42, 0.9);
+      color: #fff;
+      border-radius: 10px;
+      width: 90%;
+      font-size: 16px;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    
+    input:focus, select:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+
+    button {
+      padding: 12px 25px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 50px; /* Estilo pílula */
+      background: linear-gradient(45deg, #9333ea, #a855f7); /* Gradiente roxo */
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Rajdhani', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.8);
+    }
+    
+    button:active {
+        transform: scale(1);
+    }
+
+    .log {
+      margin-top: 20px;
+      text-align: left;
+      background: #0a0a0a;
+      padding: 15px;
+      border-radius: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    .log p { /* Adicionado para espaçamento entre logs */
+        margin: 0 0 8px 0;
+        line-height: 1.4;
+    }
+    
+    .balance {
+      margin: 15px 0;
+      display: flex;
+      justify-content: space-around;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .approved {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .rejected {
+      color: #ff4f4f;
+      font-weight: bold;
+    }
+  </style>
+   <!-- Importação das Fontes para combinar com a apresentação -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app">
+    <h1>Simulador SPT - Nubank</h1>
+    <p>Faça uma transferência e veja como o SPT funciona!</p>
+
+    <div class="balance">
+      <div>💰 Ridelvan: R$ <span id="saldo-ridelvan">500.00</span></div>
+      <div>📥 Diogo: R$ <span id="saldo-diogo">200.00</span></div>
+    </div>
+
+    <input type="number" id="valor" placeholder="Digite o valor (R$)">
+    <select id="destino">
+      <option value="diogo">Para: Diogo</option>
+      <option value="outro">Para: Outro (simulação de falha)</option>
+    </select>
+    <button onclick="processarTransacao()">Enviar Pix</button>
+
+    <div class="log" id="log">
+      <p><strong>Logs da transação:</strong></p>
+    </div>
+  </div>
+
+  <script>
+    let saldoRidelvan = 500;
+    let saldoDiogo = 200;
+    let transacaoEmAndamento = false; // Bloqueia múltiplos cliques
+
+    // Função para adicionar mensagens ao log
+    function log(texto, tipo = '') {
+      const logDiv = document.getElementById("log");
+      const p = document.createElement("p");
+      p.innerHTML = texto;
+      if (tipo === "erro") p.classList.add("rejected");
+      if (tipo === "sucesso") p.classList.add("approved");
+      logDiv.appendChild(p);
+      logDiv.scrollTop = logDiv.scrollHeight; // Rola para a mensagem mais recente
+    }
+
+    // Função para atualizar os saldos na tela
+    function atualizarSaldos() {
+      document.getElementById("saldo-ridelvan").innerText = saldoRidelvan.toFixed(2);
+      document.getElementById("saldo-diogo").innerText = saldoDiogo.toFixed(2);
+    }
+
+    // Função principal que simula o SPT
+    function processarTransacao() {
+      if (transacaoEmAndamento) {
+        return; // Impede nova transação enquanto uma está em progresso
+      }
+      transacaoEmAndamento = true;
+
+      const logDiv = document.getElementById("log");
+      logDiv.innerHTML = '<p><strong>Logs da transação:</strong></p>'; // Limpa o log anterior
+
+      const valorInput = document.getElementById("valor");
+      const valor = parseFloat(valorInput.value);
+      const destino = document.getElementById("destino").value;
+
+      log("1. [INICIANDO] Transação recebida pelo sistema...");
+      
+      // Simula a verificação de dados (Atomicidade, Consistência)
+      setTimeout(() => {
+        log("2. [VALIDANDO] Verificando dados e saldo...");
+
+        if (isNaN(valor) || valor <= 0) {
+          log("❌ [FALHA] Valor inválido!", "erro");
+          transacaoEmAndamento = false;
+          return;
+        }
+
+        if (destino !== "diogo") {
+          log("❌ [FALHA] Chave PIX/Conta de destino inválida!", "erro");
+          transacaoEmAndamento = false;
+          return;
+        }
+
+        if (valor > saldoRidelvan) {
+          log("❌ [FALHA] Saldo insuficiente!", "erro");
+          transacaoEmAndamento = false;
+          return;
+        }
+
+        log("✅ [VALIDADO] Dados corretos. Processando transferência...");
+
+        // Simula a execução da transação (Isolamento, Durabilidade)
+        setTimeout(() => {
+          log("3. [EXECUTANDO] Debitando da conta de origem e creditando no destino...");
+          saldoRidelvan -= valor;
+          saldoDiogo += valor;
+          
+          atualizarSaldos();
+          
+          log(`✅ [CONCLUÍDA] R$ ${valor.toFixed(2)} transferido com sucesso!`, "sucesso");
+          log("4. [NOTIFICANDO] Comprovante enviado para os usuários.");
+          transacaoEmAndamento = false;
+          valorInput.value = ''; // Limpa o campo de valor
+        }, 1500);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

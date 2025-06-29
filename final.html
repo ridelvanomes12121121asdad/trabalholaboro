@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco Virtual - SPT Sim</title>
+
+  <!-- Importação das Fontes do Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --purple-vibrant: #9333ea;
+      --purple-light: #a855f7;
+      --black-deep: #0a0a0a;
+      --dark-blue-bg: #0f172a;
+      --text-color: #f8fafc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: linear-gradient(135deg, var(--black-deep), var(--dark-blue-bg));
+      color: var(--text-color);
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: rgba(147, 51, 234, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px 0 rgba(147, 51, 234, 0.2);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 25px;
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--purple-vibrant), 0 0 20px var(--purple-vibrant);
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      color: var(--purple-light);
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+      padding-bottom: 8px;
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      background-color: rgba(15, 23, 42, 0.9);
+      color: var(--text-color);
+      font-size: 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+    
+    label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--purple-light);
+      margin-top: 10px;
+      display: block;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px 25px;
+      margin-top: 15px;
+      background: linear-gradient(45deg, var(--purple-vibrant), var(--purple-light));
+      color: var(--text-color);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      box-shadow: 0 0 10px var(--purple-vibrant);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px var(--purple-light);
+    }
+
+    #logoutBtn {
+        background: transparent;
+        border: 1px solid var(--purple-light);
+        box-shadow: none;
+        width: auto;
+        padding: 8px 20px;
+        margin-top: 20px;
+    }
+    #logoutBtn:hover {
+        background: var(--purple-vibrant);
+        box-shadow: 0 0 15px var(--purple-vibrant);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      max-height: 150px;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
+
+    li {
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+      font-size: 0.95rem;
+    }
+    li:last-child {
+        border-bottom: none;
+    }
+
+    .dashboard {
+      text-align: center;
+    }
+
+    .info-box {
+      margin-top: 15px;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+    .info-box h3 {
+        border: none;
+        margin: 5px 0;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.2rem;
+    }
+    #usuarioSaldo {
+        color: #00ff88;
+        font-weight: bold;
+    }
+    
+    .section-card {
+      margin-top: 25px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    #mensagensRecebidas li {
+        background: rgba(168, 85, 247, 0.15);
+        word-break: break-word;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Banco Virtual</h1>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-section" class="section-card">
+        <h2>Acessar Conta</h2>
+        <input type="text" id="nomeInput" placeholder="Digite seu nome ou crie um novo" />
+        <button id="loginBtn">Entrar / Cadastrar</button>
+    </div>
+
+    <!-- APLICATIVO PRINCIPAL -->
+    <div id="app-section" style="display:none;">
+      
+      <div class="dashboard">
+        <h2>Bem-vindo, <span id="usuarioNome" style="color: var(--purple-light);"></span>!</h2>
+        <div class="info-box">
+          <h3>Usuários cadastrados: <span id="totalUsuarios">0</span></h3>
+          <h3>Seu saldo: R$ <span id="usuarioSaldo">0,00</span></h3>
+        </div>
+      </div>
+
+      <div id="transferir-section" class="section-card">
+        <h3>Realizar Transferência</h3>
+        <label for="destinatarioSelect">Destinatário:</label>
+        <select id="destinatarioSelect"></select>
+        <label for="quantiaInput">Quantia (R$):</label>
+        <input type="number" id="quantiaInput" min="1" step="1" value="100" />
+        <label for="mensagemInput">Mensagem (opcional):</label>
+        <input type="text" id="mensagemInput" maxlength="100" placeholder="Digite uma mensagem" />
+        <button id="transferirBtn">Transferir</button>
+      </div>
+
+      <div class="section-card">
+        <h3>Lista de Usuários</h3>
+        <ul id="usuariosLista"></ul>
+      </div>
+      
+      <div class="section-card">
+        <h3>Transações Recentes</h3>
+        <ul id="transacoesLista"></ul>
+      </div>
+
+      <div class="section-card">
+        <h3>Mensagens Recebidas</h3>
+        <ul id="mensagensRecebidas"></ul>
+      </div>
+
+      <div style="text-align: center;">
+        <button id="logoutBtn">Sair</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    // AVISO: As chaves do Firebase estão expostas. Em um projeto real, isso deve ser protegido.
+    // Para um trabalho de faculdade, é aceitável.
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoizXgswmGSSGo8wdcWYRlktenakR05QA",
+      authDomain: "bancovirtual-5a8c2.firebaseapp.com",
+      databaseURL: "https://bancovirtual-5a8c2-default-rtdb.firebaseio.com",
+      projectId: "bancovirtual-5a8c2",
+      storageBucket: "bancovirtual-5a8c2.firebasestorage.app",
+      messagingSenderId: "1031732186235",
+      appId: "1:1031732186235:web:3e29e1326a77e0250e26de",
+      measurementId: "G-WCJQRETD2M"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const loginSection = document.getElementById('login-section');
+    const appSection = document.getElementById('app-section');
+    const nomeInput = document.getElementById('nomeInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const usuarioNome = document.getElementById('usuarioNome');
+    const usuarioSaldo = document.getElementById('usuarioSaldo');
+    const usuariosLista = document.getElementById('usuariosLista');
+    const destinatarioSelect = document.getElementById('destinatarioSelect');
+    const transferirBtn = document.getElementById('transferirBtn');
+    const transacoesLista = document.getElementById('transacoesLista');
+    const totalUsuarios = document.getElementById('totalUsuarios');
+    const quantiaInput = document.getElementById('quantiaInput');
+    const mensagemInput = document.getElementById('mensagemInput');
+    const mensagensRecebidas = document.getElementById('mensagensRecebidas');
+
+    let usuarioAtual = null;
+
+    window.onload = function() {
+      const nomeSalvo = localStorage.getItem('usuario_nome');
+      if (nomeSalvo) {
+        db.ref('usuarios/' + nomeSalvo).once('value', snap => {
+          if (snap.exists()) {
+            usuarioAtual = nomeSalvo;
+            mostrarApp(nomeSalvo);
+          } else {
+            localStorage.removeItem('usuario_nome');
+          }
+        });
+      }
+    };
+
+    loginBtn.onclick = function() {
+      const nome = nomeInput.value.trim();
+      if (!nome) return alert('Digite seu nome!');
+      
+      db.ref('usuarios/' + nome).once('value', snap => {
+        if (snap.exists()) {
+          usuarioAtual = nome;
+          localStorage.setItem('usuario_nome', nome);
+          mostrarApp(nome);
+        } else {
+          // MODIFICAÇÃO PARA O USUÁRIO 'Ridelvan'
+          const saldoInicial = (nome.toLowerCase() === 'ridelvan') ? 1000000 : 100;
+          
+          db.ref('usuarios/' + nome).set({ saldo: saldoInicial });
+          usuarioAtual = nome;
+          localStorage.setItem('usuario_nome', nome);
+          mostrarApp(nome);
+        }
+      });
+    };
+
+    logoutBtn.onclick = function() {
+      usuarioAtual = null;
+      localStorage.removeItem('usuario_nome');
+      loginSection.style.display = 'block';
+      appSection.style.display = 'none';
+      nomeInput.value = '';
+    };
+
+    function mostrarApp(nome) {
+      loginSection.style.display = 'none';
+      appSection.style.display = 'block';
+      usuarioNome.textContent = nome;
+      atualizarUsuarios();
+      atualizarTransacoes();
+      atualizarMensagensRecebidas();
+    }
+
+    function atualizarUsuarios() {
+      db.ref('usuarios').on('value', snap => {
+        const usuarios = snap.val() || {};
+        usuariosLista.innerHTML = '';
+        destinatarioSelect.innerHTML = '<option value="">Selecione...</option>';
+        let total = 0;
+        Object.keys(usuarios).forEach(nome => {
+          total++;
+          const saldoFormatado = usuarios[nome].saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace("R$","").trim();
+          const li = document.createElement('li');
+          li.innerHTML = `${nome} <span style="float: right;">R$ ${saldoFormatado}</span>`;
+          usuariosLista.appendChild(li);
+          if (nome !== usuarioAtual) {
+            const opt = document.createElement('option');
+            opt.value = nome;
+            opt.textContent = nome;
+            destinatarioSelect.appendChild(opt);
+          } else if (usuarioAtual) {
+             usuarioSaldo.textContent = usuarios[nome].saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace("R$","").trim();
+          }
+        });
+        totalUsuarios.textContent = total;
+      });
+    }
+
+    transferirBtn.onclick = function() {
+      const destinatario = destinatarioSelect.value;
+      const quantia = parseInt(quantiaInput.value, 10);
+      const mensagem = mensagemInput.value.trim();
+      if (!destinatario) return alert('Selecione um destinatário!');
+      if (isNaN(quantia) || quantia <= 0) return alert('Digite uma quantia válida!');
+
+      db.ref('usuarios').transaction(usuarios => {
+        if (!usuarios || !usuarios[usuarioAtual] || !usuarios[destinatario]) return;
+        if (usuarios[usuarioAtual].saldo < quantia) {
+          alert('Saldo insuficiente!');
+          return;
+        }
+        usuarios[usuarioAtual].saldo -= quantia;
+        usuarios[destinatario].saldo += quantia;
+        return usuarios;
+      }, (error, committed) => {
+        if (committed) {
+          const transacaoData = {
+            de: usuarioAtual,
+            para: destinatario,
+            valor: quantia,
+            timestamp: Date.now()
+          };
+          db.ref('transacoes').push(transacaoData);
+          
+          if (mensagem) {
+            db.ref('mensagens/' + destinatario).push({
+              ...transacaoData,
+              mensagem: mensagem,
+            });
+          }
+          quantiaInput.value = 100;
+          mensagemInput.value = '';
+        }
+      });
+    };
+
+    function atualizarTransacoes() {
+      db.ref('transacoes').limitToLast(10).on('value', snap => {
+        const transacoes = snap.val() || {};
+        transacoesLista.innerHTML = '';
+        Object.values(transacoes).sort((a, b) => b.timestamp - a.timestamp).forEach(tx => {
+          const valorFormatado = tx.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          const li = document.createElement('li');
+          li.textContent = `${tx.de} enviou ${valorFormatado} para ${tx.para}`;
+          transacoesLista.appendChild(li);
+        });
+      });
+    }
+
+    function atualizarMensagensRecebidas() {
+      if (!usuarioAtual) return;
+      db.ref('mensagens/' + usuarioAtual).limitToLast(10).on('value', snap => {
+        const mensagens = snap.val() || {};
+        mensagensRecebidas.innerHTML = '';
+        if (Object.keys(mensagens).length === 0) {
+            mensagensRecebidas.innerHTML = '<li>Nenhuma mensagem recebida.</li>';
+            return;
+        }
+        Object.values(mensagens).sort((a, b) => b.timestamp - a.timestamp).forEach(msg => {
+          const valorFormatado = msg.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>De: ${msg.de}</strong> (${valorFormatado})<br>"${msg.mensagem}"`;
+          mensagensRecebidas.appendChild(li);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

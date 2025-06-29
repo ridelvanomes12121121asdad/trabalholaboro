@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador SPT Hospitalar</title>
+  
+  <!-- Importação das Fontes do Google para combinar com a apresentação -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- Configurações Globais e Paleta de Cores da Apresentação --- */
+    :root {
+      --purple-vibrant: #9333ea;
+      --purple-light: #a855f7;
+      --black-deep: #0a0a0a;
+      --dark-blue-bg: #0f172a;
+      --text-color: #f8fafc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--black-deep), var(--dark-blue-bg));
+      color: var(--text-color);
+      font-family: 'Rajdhani', sans-serif;
+      margin: 0;
+      padding: 20px 0; /* Espaçamento vertical */
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      background: transparent; /* Remove o fundo sólido */
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: var(--text-color);
+      text-shadow: 
+        0 0 5px #fff, 
+        0 0 10px #fff, 
+        0 0 15px var(--purple-vibrant), 
+        0 0 20px var(--purple-vibrant);
+      animation: pulsate-glow 3s infinite alternate;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    /* Aplicando o estilo do "content-card" da apresentação */
+    .section {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(147, 51, 234, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(147, 51, 234, 0.2);
+    }
+
+    .section h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      color: var(--purple-light);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    select, button {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+    }
+    
+    select {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 10px auto;
+        padding: 12px;
+        font-size: 1rem;
+        background-color: rgba(15, 23, 42, 0.9);
+        color: var(--text-color);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    select:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+    
+    .actions-container {
+        text-align: center;
+    }
+
+    /* Aplicando o estilo do "example-button" da apresentação */
+    button {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 25px;
+      background: linear-gradient(45deg, var(--purple-vibrant), var(--purple-light));
+      color: var(--text-color);
+      font-size: 1rem;
+      border-radius: 50px; /* Estilo pílula */
+      border: none;
+      box-shadow: 0 0 10px var(--purple-vibrant);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--purple-light);
+    }
+    button:active {
+        transform: scale(1);
+    }
+
+    .log {
+      background: var(--black-deep);
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      max-height: 250px;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    .log p {
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(248, 250, 252, 0.6);
+      border-top: 1px solid rgba(168, 85, 247, 0.2);
+      margin-top: 40px;
+    }
+
+    /* Animação de brilho para o título */
+    @keyframes pulsate-glow {
+        from {
+            text-shadow: 
+                0 0 4px #fff, 
+                0 0 8px #fff, 
+                0 0 12px var(--purple-vibrant), 
+                0 0 16px var(--purple-vibrant);
+        }
+        to {
+            text-shadow: 
+                0 0 6px #fff, 
+                0 0 12px #fff, 
+                0 0 18px var(--purple-light), 
+                0 0 24px var(--purple-light);
+        }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Simulador Didático de SPT em Hospital</h1>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>1. Selecionar Paciente</h2>
+      <select id="pacienteSelect">
+        <option value="">-- Selecione um paciente --</option>
+        <option>Ridelvan</option>
+        <option>Pablo</option>
+        <option>Dinailson</option>
+        <option>Diogo</option>
+        <option>Carla</option>
+        <option>Lucas</option>
+        <option>Fernanda</option>
+        <option>Marcos</option>
+        <option>Sofia</option>
+        <option>Joana</option>
+        <option>Tiago</option>
+        <option>Larissa</option>
+        <option>Eduardo</option>
+        <option>Vanessa</option>
+        <option>Caio</option>
+        <option>Beatriz</option>
+        <option>Samuel</option>
+        <option>Camila</option>
+        <option>Henrique</option>
+        <option>Júlia</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <h2>2. Ações Hospitalares</h2>
+      <div class="actions-container">
+          <button onclick="registrar('Exame de sangue solicitado')">Solicitar Exame</button>
+          <button onclick="registrar('Medicação aplicada')">Aplicar Medicação</button>
+          <button onclick="registrar('Alta hospitalar registrada')">Dar Alta</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>3. Registro de Transações (Log do Sistema)</h2>
+      <div id="log" class="log">
+        <p>Nenhuma transação registrada ainda.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Simulador interativo para ensino do funcionamento do SPT em hospitais.
+  </footer>
+
+  <script>
+    const logDiv = document.getElementById('log');
+
+    function registrar(acao) {
+      const paciente = document.getElementById('pacienteSelect').value;
+      if (!paciente) {
+        alert('Por favor, selecione um paciente antes de registrar uma ação.');
+        return;
+      }
+
+      // Limpa a mensagem inicial se for a primeira ação
+      if (logDiv.innerHTML.includes('Nenhuma transação registrada ainda.')) {
+        logDiv.innerHTML = '';
+      }
+      
+      const p = document.createElement('p');
+      const hora = new Date().toLocaleTimeString('pt-BR');
+      
+      // Destaca as partes importantes
+      p.innerHTML = `[${hora}] <strong style="color: var(--purple-light);">${acao}</strong> para o paciente <strong style="color: #fff;">${paciente}</strong>.`;
+      
+      logDiv.appendChild(p);
+      logDiv.scrollTop = logDiv.scrollHeight; // Rola para a mensagem mais recente
+    }
+  </script>
+</body>
+</html>

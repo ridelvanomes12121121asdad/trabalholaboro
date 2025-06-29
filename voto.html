@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simulador de Votação Eletrônica</title>
+  
+  <!-- Importação das Fontes do Google para combinar com a apresentação -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- Configurações Globais e Paleta de Cores da Apresentação --- */
+    :root {
+      --purple-vibrant: #9333ea;
+      --purple-light: #a855f7;
+      --black-deep: #0a0a0a;
+      --dark-blue-bg: #0f172a;
+      --text-color: #f8fafc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--black-deep), var(--dark-blue-bg));
+      color: var(--text-color);
+      font-family: 'Rajdhani', sans-serif;
+      margin: 0;
+      padding: 20px 0;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      background: transparent;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: var(--text-color);
+      text-shadow: 
+        0 0 5px #fff, 
+        0 0 10px #fff, 
+        0 0 15px var(--purple-vibrant), 
+        0 0 20px var(--purple-vibrant);
+      animation: pulsate-glow 3s infinite alternate;
+    }
+    
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    /* Estilo Glassmorphism para seções */
+    .section {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(147, 51, 234, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(147, 51, 234, 0.2);
+      text-align: center;
+    }
+
+    .section h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      color: var(--purple-light);
+      margin-bottom: 20px;
+    }
+
+    label {
+        font-size: 1.2rem;
+        margin-right: 10px;
+    }
+
+    input[type="number"] {
+      font-size: 1.5rem;
+      padding: 10px;
+      width: 120px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      background-color: rgba(15, 23, 42, 0.9);
+      color: var(--text-color);
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+    }
+    
+    /* Estilo de botão "pílula" da apresentação */
+    button {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 25px;
+      background: linear-gradient(45deg, var(--purple-vibrant), var(--purple-light));
+      color: var(--text-color);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: none;
+      box-shadow: 0 0 10px var(--purple-vibrant);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--purple-light);
+    }
+    
+    button:active {
+        transform: scale(1);
+    }
+    
+    #candidateName {
+      font-weight: 600;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: var(--text-color);
+    }
+
+    #photoContainer {
+      width: 200px;
+      height: 250px;
+      margin: 0 auto 20px;
+      background-color: var(--black-deep);
+      border-radius: 12px;
+      border: 2px solid var(--purple-light);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      overflow: hidden; 
+    }
+
+    /* Estilo para as fotos dos candidatos */
+    .candidate-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+        display: none; /* Esconde as imagens por padrão */
+    }
+
+    #log {
+      background: var(--black-deep);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #00ff88;
+    }
+
+    @keyframes pulsate-glow {
+        from { text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px var(--purple-vibrant), 0 0 16px var(--purple-vibrant); }
+        to { text-shadow: 0 0 6px #fff, 0 0 12px #fff, 0 0 18px var(--purple-light), 0 0 24px var(--purple-light); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Simulador de Votação Eletrônica</h1>
+  </header>
+  
+  <div class="container">
+      <div class="section">
+          <h2>1. Digite o Voto</h2>
+          <label for="voteInput">Número do candidato:</label>
+          <input type="number" id="voteInput" min="10" max="99" onkeyup="checkInput(event)" />
+          <button onclick="mostrarCandidato()">Confirmar Número</button>
+      </div>
+
+      <div id="candidateInfo" class="section" style="display:none;">
+          <h2>2. Confirme seu Voto</h2>
+          <div id="candidateName"></div>
+          
+          <div id="photoContainer">
+            <!-- ================================================================= -->
+            <!-- ★★ ÁREA DE CONFIGURAÇÃO DAS IMAGENS ★★ -->
+            <!-- Coloque o caminho e o nome da sua imagem aqui. -->
+            <!-- Lembre-se que a pasta "img" deve estar ao lado deste arquivo html. -->
+            <!-- ================================================================= -->
+            
+            <!-- FOTO DO CANDIDATO 13 -->
+            <img id="foto-13" class="candidate-photo" src="img/lula.png" alt="Foto do Candidato Lula">
+            
+            <!-- FOTO DO CANDIDATO 22 -->
+            <img id="foto-22" class="candidate-photo" src="img/bolso.png" alt="Foto do Candidato Bolsonaro">
+            
+            <!-- ================================================================= -->
+          </div>
+
+          <button onclick="computarVoto()">Computar Voto</button>
+      </div>
+      
+      <div class="section">
+          <h2>3. Log de Transações (Votos)</h2>
+          <div id="log">
+              <p style="color: rgba(255,255,255,0.6); text-align: center;">Nenhum voto registrado ainda.</p>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    const nomesCandidatos = {
+      13: 'Lula',
+      22: 'Bolsonaro'
+    };
+
+    let votoAtual = null;
+    const logDiv = document.getElementById('log');
+
+    function checkInput(event) {
+        if (event.key === "Enter") {
+            mostrarCandidato();
+        }
+    }
+
+    function mostrarCandidato() {
+      const num = document.getElementById('voteInput').value;
+      const infoDiv = document.getElementById('candidateInfo');
+      const nomeDiv = document.getElementById('candidateName');
+      
+      // Pega as tags de imagem do HTML
+      const foto13 = document.getElementById('foto-13');
+      const foto22 = document.getElementById('foto-22');
+
+      // Esconde todas as fotos para começar do zero
+      foto13.style.display = 'none';
+      foto22.style.display = 'none';
+
+      if (nomesCandidatos[num]) {
+        votoAtual = num;
+        nomeDiv.textContent = `Candidato: ${nomesCandidatos[num]}`;
+        
+        // Mostra a foto correta
+        if (num === '13') {
+            foto13.style.display = 'block';
+        } else if (num === '22') {
+            foto22.style.display = 'block';
+        }
+
+        infoDiv.style.display = 'block';
+      } else {
+        alert('Número inválido. Digite 13 para Lula ou 22 para Bolsonaro.');
+        infoDiv.style.display = 'none';
+        votoAtual = null;
+      }
+    }
+
+    function computarVoto() {
+      if (!votoAtual) {
+        alert('Confirme o número do candidato antes de computar o voto.');
+        return;
+      }
+      
+      if (logDiv.innerHTML.includes('Nenhum voto registrado ainda.')) {
+        logDiv.innerHTML = '';
+      }
+
+      const hora = new Date().toLocaleTimeString('pt-BR');
+      const p = document.createElement('p');
+      p.innerHTML = `[${hora}] VOTO CONFIRMADO | Transação registrada para candidato ${votoAtual} (${nomesCandidatos[votoAtual]}).`;
+      
+      logDiv.appendChild(p);
+      logDiv.scrollTop = logDiv.scrollHeight;
+
+      document.getElementById('voteInput').value = '';
+      document.getElementById('candidateInfo').style.display = 'none';
+      votoAtual = null;
+    }
+  </script>
+</body>
+</html>
